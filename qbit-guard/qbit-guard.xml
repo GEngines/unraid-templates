@@ -7,7 +7,7 @@
   <MyIP/>
   <Shell>sh</Shell>
   <Privileged>false</Privileged>
-  <Support>https://gengines.github.io/qbit-guard/troubleshooting/</Support>
+  <Support>https://forums.unraid.net/topic/193136-qbit-guard-protect-your-media-library-from-unwanted-downloads/</Support>
   <Project>https://github.com/GEngines/qbit-guard</Project>
   <Overview>A zero-dependency Python guard for qBittorrent that blocks pre-air TV episodes (Sonarr), deletes ISO/BDMV-only torrents, and auto-blocklists bad releases in Sonarr/Radarr (with dedupe + queue failover). Runs on "torrent added", fetches metadata safely, and logs everything to stdout.&#xD;
 &#xD;
