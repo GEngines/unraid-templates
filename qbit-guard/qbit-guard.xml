@@ -30,9 +30,9 @@ Container-friendly: All configuration via environment variables, logs to stdout<
   <DonateText/>
   <DonateLink/>
   <Requires/>
-  <Config Name="QBitTorrent Host URL" Target="QBIT_HOST" Default="" Mode="" Description="" Type="Variable" Display="always" Required="true" Mask="false">http://192.168.2.10:9092</Config>
+  <Config Name="QBitTorrent Host URL" Target="QBIT_HOST" Default="" Mode="" Description="" Type="Variable" Display="always" Required="true" Mask="false">http://127.0.0.1:8080</Config>
   <Config Name="QBitTorrent Username" Target="QBIT_USER" Default="admin" Mode="" Description="defaults to admin" Type="Variable" Display="always" Required="true" Mask="false">admin</Config>
-  <Config Name="QBIT_PASS" Target="QBIT_PASS" Default="" Mode="" Description="" Type="Variable" Display="always" Required="true" Mask="false">ZId9!4iWiKazJwz#</Config>
+  <Config Name="QBIT_PASS" Target="QBIT_PASS" Default="" Mode="" Description="" Type="Variable" Display="always" Required="true" Mask="false"></Config>
   <Config Name="QBIT_ALLOWED_CATEGORIES" Target="QBIT_ALLOWED_CATEGORIES" Default="tv-sonarr,radarr" Mode="" Description="" Type="Variable" Display="always" Required="false" Mask="false">tv-sonarr,radarr</Config>
   <Config Name="SONARR_URL" Target="SONARR_URL" Default="" Mode="" Description="" Type="Variable" Display="always" Required="false" Mask="false"/>
   <Config Name="QBIT_DELETE_FILES" Target="QBIT_DELETE_FILES" Default="true" Mode="" Description="Delete files when removing torrents" Type="Variable" Display="always" Required="false" Mask="false">true</Config>
