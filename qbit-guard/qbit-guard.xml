@@ -19,7 +19,7 @@ Smart blocklisting: Blocklists in Sonarr/Radarr before deletion using deduped hi
 Internet cross-verification: Optional TVmaze and/or TheTVDB API integration&#xD;
 Zero dependencies: No external libraries, just Python 3.8+ stdlib&#xD;
 Container-friendly: All configuration via environment variables, logs to stdout</Overview>
-  <Category>Downloaders: HomeAutomation: Productivity: Tools:</Category>
+  <Category>Downloaders: Tools:</Category>
   <WebUI/>
   <TemplateURL>https://raw.githubusercontent.com/GEngines/unraid-templates/refs/heads/main/qbit-guard/qbit-guard.xml</TemplateURL>
   <Icon>https://raw.githubusercontent.com/GEngines/qbit-guard/refs/heads/main/img/qbit-guard-icon.png</Icon>
