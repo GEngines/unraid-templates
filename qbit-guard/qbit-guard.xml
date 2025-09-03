@@ -13,10 +13,12 @@
 &#xD;
 Key Features:&#xD;
 Pre-air gate (Sonarr): Stops new TV torrents, checks airDateUtc with configurable grace periods&#xD;
+TMDB integration (Radarr): Verifies movie digital release dates to prevent pre-release downloads&#xD;
 Extension policy: Allow/Block by file extension with configurable strategies&#xD;
+Selective file unchecking: Optionally uncheck blocked files instead of deleting entire torrents&#xD;
 ISO/BDMV cleaner: Removes disc-image-only torrents that lack keepable video content&#xD;
 Smart blocklisting: Blocklists in Sonarr/Radarr before deletion using deduped history&#xD;
-Internet cross-verification: Optional TVmaze and/or TheTVDB API integration&#xD;
+Internet cross-verification: Optional TVmaze, TheTVDB, and/or TMDB API integration&#xD;
 Zero dependencies: No external libraries, just Python 3.8+ stdlib&#xD;
 Container-friendly: All configuration via environment variables, logs to stdout</Overview>
   <Category>Downloaders: Tools:</Category>
@@ -42,7 +44,7 @@ Container-friendly: All configuration via environment variables, logs to stdout<
     <Config Name="Variable: WATCH_PROCESS_EXISTING_AT_START" Target="WATCH_PROCESS_EXISTING_AT_START" Default="0|1" Description="Process existing torrents when container starts (0 or 1)" Type="Variable" Display="always" Required="false" Mask="false"/>
     <Config Name="Variable: WATCH_RESCAN_KEYWORD" Target="WATCH_RESCAN_KEYWORD" Default="rescan" Description="Keyword in category/tags to force reprocessing" Type="Variable" Display="advanced" Required="false" Mask="false"/>
 
-    <Config Name="Variable: ENABLE_PREAIR_CHECK" Target="ENABLE_PREAIR_CHECK" Default="1|0" Description="Enable pre-air checking (0 or 1)" Type="Variable" Display="always" Required="false" Mask="false"/>
+    <Config Name="Variable: ENABLE_PREAIR_CHECK" Target="ENABLE_PREAIR_CHECK" Default="1|0" Description="Enable pre-air checking for TV shows and movies (0 or 1)" Type="Variable" Display="always" Required="false" Mask="false"/>
     <Config Name="Variable: SONARR_URL" Target="SONARR_URL" Default="http://127.0.0.1:8989" Description="Sonarr base URL" Type="Variable" Display="always" Required="false" Mask="false"/>
     <Config Name="Variable: SONARR_APIKEY" Target="SONARR_APIKEY" Default="" Description="Sonarr API key" Type="Variable" Display="always" Required="false" Mask="true"/>
     <Config Name="Variable: SONARR_CATEGORIES" Target="SONARR_CATEGORIES" Default="tv-sonarr" Description="Categories to apply pre-air checks to" Type="Variable" Display="advanced" Required="false" Mask="false"/>
@@ -58,7 +60,7 @@ Container-friendly: All configuration via environment variables, logs to stdout<
 
     <Config Name="Variable: RADARR_URL" Target="RADARR_URL" Default="http://127.0.0.1:7878" Description="Radarr base URL" Type="Variable" Display="always" Required="false" Mask="false"/>
     <Config Name="Variable: RADARR_APIKEY" Target="RADARR_APIKEY" Default="" Description="Radarr API key" Type="Variable" Display="always" Required="false" Mask="true"/>
-    <Config Name="Variable: RADARR_CATEGORIES" Target="RADARR_CATEGORIES" Default="radarr" Description="Categories to apply Radarr blocklisting to" Type="Variable" Display="advanced" Required="false" Mask="false"/>
+    <Config Name="Variable: RADARR_CATEGORIES" Target="RADARR_CATEGORIES" Default="radarr" Description="Categories for Radarr blocklisting and pre-air checks" Type="Variable" Display="advanced" Required="false" Mask="false"/>
     <Config Name="Variable: RADARR_TIMEOUT_SEC" Target="RADARR_TIMEOUT_SEC" Default="45" Description="HTTP timeout for Radarr API calls" Type="Variable" Display="advanced" Required="false" Mask="false"/>
     <Config Name="Variable: RADARR_RETRIES" Target="RADARR_RETRIES" Default="3" Description="Retry attempts for Radarr operations" Type="Variable" Display="advanced" Required="false" Mask="false"/>
 
@@ -73,6 +75,11 @@ Container-friendly: All configuration via environment variables, logs to stdout<
     <Config Name="Variable: TVDB_TIMEOUT_SEC" Target="TVDB_TIMEOUT_SEC" Default="8" Description="HTTP timeout for TheTVDB API calls" Type="Variable" Display="advanced" Required="false" Mask="false"/>
     <Config Name="Variable: TVDB_BEARER" Target="TVDB_BEARER" Default="" Description="Reuse existing bearer token (optional)" Type="Variable" Display="advanced" Required="false" Mask="true"/>
 
+    <Config Name="Variable: TMDB_APIKEY" Target="TMDB_APIKEY" Default="" Description="TMDB API key (required for movie digital release verification)" Type="Variable" Display="always" Required="false" Mask="true"/>
+    <Config Name="Variable: TMDB_BASE" Target="TMDB_BASE" Default="https://api.themoviedb.org/3" Description="TMDB API base URL" Type="Variable" Display="advanced" Required="false" Mask="false"/>
+    <Config Name="Variable: TMDB_TIMEOUT_SEC" Target="TMDB_TIMEOUT_SEC" Default="8" Description="HTTP timeout for TMDB API calls" Type="Variable" Display="advanced" Required="false" Mask="false"/>
+    <Config Name="Variable: TMDB_LANGUAGE" Target="TMDB_LANGUAGE" Default="en-US" Description="Language code for TMDB" Type="Variable" Display="advanced" Required="false" Mask="false"/>
+
     <Config Name="Variable: ENABLE_ISO_CHECK" Target="ENABLE_ISO_CHECK" Default="1|0" Description="Enable ISO/disc image cleanup (0 or 1)" Type="Variable" Display="always" Required="false" Mask="false"/>
     <Config Name="Variable: MIN_KEEPABLE_VIDEO_MB" Target="MIN_KEEPABLE_VIDEO_MB" Default="50" Description="Minimum size for video files to keep (MB)" Type="Variable" Display="advanced" Required="false" Mask="false"/>
     <Config Name="Variable: METADATA_POLL_INTERVAL" Target="METADATA_POLL_INTERVAL" Default="1.5" Description="Seconds between file list checks during metadata fetching" Type="Variable" Display="advanced" Required="false" Mask="false"/>
@@ -84,11 +91,12 @@ Container-friendly: All configuration via environment variables, logs to stdout<
     <Config Name="Variable: GUARD_BLOCKED_EXTS" Target="GUARD_BLOCKED_EXTS" Default="" Description="Comma-separated list of blocked extensions (overrides defaults in block mode)" Type="Variable" Display="always" Required="false" Mask="false"/>
     <Config Name="Variable: GUARD_EXT_DELETE_IF_ALL_BLOCKED" Target="GUARD_EXT_DELETE_IF_ALL_BLOCKED" Default="1|0" Description="Delete only if all files are disallowed (0 or 1)" Type="Variable" Display="always" Required="false" Mask="false"/>
     <Config Name="Variable: GUARD_EXT_DELETE_IF_ANY_BLOCKED" Target="GUARD_EXT_DELETE_IF_ANY_BLOCKED" Default="0|1" Description="Delete if any file is disallowed (0 or 1)" Type="Variable" Display="always" Required="false" Mask="false"/>
+    <Config Name="Variable: GUARD_UNCHECK_BLOCKED_FILES" Target="GUARD_UNCHECK_BLOCKED_FILES" Default="0|1" Description="Uncheck blocked files instead of deleting torrent (0 or 1)" Type="Variable" Display="always" Required="false" Mask="false"/>
     <Config Name="Variable: GUARD_EXT_VIOLATION_TAG" Target="GUARD_EXT_VIOLATION_TAG" Default="trash:ext" Description="Tag applied to torrents deleted for extension violations" Type="Variable" Display="advanced" Required="false" Mask="false"/>
     <Config Name="Variable: GUARD_DISC_EXTS" Target="GUARD_DISC_EXTS" Default="iso,img,mdf,nrg,cue,bin" Description="Disc image extensions" Type="Variable" Display="advanced" Required="false" Mask="false"/>
     <Config Name="Variable: GUARD_EXTS_FILE" Target="GUARD_EXTS_FILE" Default="" Description="Path to JSON config file (optional)" Type="Variable" Display="advanced" Required="false" Mask="false"/>
 
-    <Config Name="Variable: LOG_LEVEL" Target="LOG_LEVEL" Default="INFO|DEBUG" Description="Logging verbosity: INFO or DEBUG" Type="Variable" Display="advanced" Required="false" Mask="false"/>
+    <Config Name="Variable: LOG_LEVEL" Target="LOG_LEVEL" Default="INFO|DEBUG|DETAILED" Description="Logging verbosity: INFO, DEBUG, or DETAILED" Type="Variable" Display="advanced" Required="false" Mask="false"/>
     <Config Name="Variable: USER_AGENT" Target="USER_AGENT" Default="qbit-guard/2.0" Description="HTTP User-Agent string for API calls" Type="Variable" Display="advanced" Required="false" Mask="false"/>
   <TailscaleStateDir/>
 </Container>
