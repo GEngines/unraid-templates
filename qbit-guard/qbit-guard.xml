@@ -44,7 +44,7 @@ Container-friendly: All configuration via environment variables, logs to stdout<
     <Config Name="Variable: WATCH_PROCESS_EXISTING_AT_START" Target="WATCH_PROCESS_EXISTING_AT_START" Default="0|1" Description="Process existing torrents when container starts (0 or 1)" Type="Variable" Display="always" Required="false" Mask="false"/>
     <Config Name="Variable: WATCH_RESCAN_KEYWORD" Target="WATCH_RESCAN_KEYWORD" Default="rescan" Description="Keyword in category/tags to force reprocessing" Type="Variable" Display="advanced" Required="false" Mask="false"/>
 
-    <Config Name="Variable: ENABLE_PREAIR_CHECK" Target="ENABLE_PREAIR_CHECK" Default="1|0" Description="Enable pre-air checking (0 or 1)" Type="Variable" Display="always" Required="false" Mask="false"/>
+    <Config Name="Variable: ENABLE_PREAIR_CHECK" Target="ENABLE_PREAIR_CHECK" Default="1|0" Description="Enable pre-air checking for TV shows and movies (0 or 1)" Type="Variable" Display="always" Required="false" Mask="false"/>
     <Config Name="Variable: SONARR_URL" Target="SONARR_URL" Default="http://127.0.0.1:8989" Description="Sonarr base URL" Type="Variable" Display="always" Required="false" Mask="false"/>
     <Config Name="Variable: SONARR_APIKEY" Target="SONARR_APIKEY" Default="" Description="Sonarr API key" Type="Variable" Display="always" Required="false" Mask="true"/>
     <Config Name="Variable: SONARR_CATEGORIES" Target="SONARR_CATEGORIES" Default="tv-sonarr" Description="Categories to apply pre-air checks to" Type="Variable" Display="advanced" Required="false" Mask="false"/>
@@ -60,7 +60,7 @@ Container-friendly: All configuration via environment variables, logs to stdout<
 
     <Config Name="Variable: RADARR_URL" Target="RADARR_URL" Default="http://127.0.0.1:7878" Description="Radarr base URL" Type="Variable" Display="always" Required="false" Mask="false"/>
     <Config Name="Variable: RADARR_APIKEY" Target="RADARR_APIKEY" Default="" Description="Radarr API key" Type="Variable" Display="always" Required="false" Mask="true"/>
-    <Config Name="Variable: RADARR_CATEGORIES" Target="RADARR_CATEGORIES" Default="radarr" Description="Categories to apply Radarr blocklisting to" Type="Variable" Display="advanced" Required="false" Mask="false"/>
+    <Config Name="Variable: RADARR_CATEGORIES" Target="RADARR_CATEGORIES" Default="radarr" Description="Categories for Radarr blocklisting and pre-air checks" Type="Variable" Display="advanced" Required="false" Mask="false"/>
     <Config Name="Variable: RADARR_TIMEOUT_SEC" Target="RADARR_TIMEOUT_SEC" Default="45" Description="HTTP timeout for Radarr API calls" Type="Variable" Display="advanced" Required="false" Mask="false"/>
     <Config Name="Variable: RADARR_RETRIES" Target="RADARR_RETRIES" Default="3" Description="Retry attempts for Radarr operations" Type="Variable" Display="advanced" Required="false" Mask="false"/>
 
